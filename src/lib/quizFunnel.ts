@@ -1,0 +1,440 @@
+// Step definitions for the custom quiz funnel on /lp-quiz (QuizFunnel.tsx).
+// Branching is driven entirely by `next` on each button, so the component
+// stays generic — this file is the only place that needs to change if the
+// question flow changes.
+//
+// Every choice step can also carry real, factual content (checklist / facts
+// / note) rendered above its buttons — this is what lets the quiz actually
+// answer the shopper's real barrier (can I fit this? does my bike fit?
+// how does this compare?) instead of just routing them toward the product
+// page. Specs quoted here match the live PDP/FAQ copy in lib/config.ts —
+// keep the two in sync if the real specs ever change. Checklist/fact text
+// is kept short on purpose — these render as compact icon grids, not
+// paragraphs, so the modal stays inside a laptop viewport.
+
+import type { LucideIcon } from "lucide-react";
+import {
+  Ruler,
+  Disc,
+  Weight,
+  Package,
+  Baby,
+  Car,
+  Bike,
+  Scale,
+  ClipboardCheck,
+  BarChart3,
+  CircleDot,
+  AlertTriangle,
+  ChevronsDown,
+  Home,
+  MessageSquare,
+  CheckCircle2,
+  Compass,
+  ShieldCheck,
+  BadgeCheck,
+  Mountain,
+  Zap,
+  Route,
+  Snowflake,
+  Building2,
+  Users,
+} from "lucide-react";
+
+// Which Klaviyo customer_type segment this shopper belongs to. Set directly
+// by the first step's explicit choice; if that's somehow unanswered, the
+// component falls back to inferring it from the bike-inventory step. Used
+// both to tag the Klaviyo profile on submission and to personalize the
+// recommendation screen's kicker copy.
+export type CustomerType = "family_adventures" | "mountain_biking" | "cycling" | "other";
+
+export type ChoiceButton = {
+  label: string;
+  next: number;
+  variant?: "default" | "other";
+  // Only set on the opening "which best describes you?" step — the
+  // explicit, self-reported version of customer_type (preferred over the
+  // inventory-based inference it also feeds as a fallback).
+  customerType?: CustomerType;
+  // Only set on the bike-count step — lets the recommendation at the
+  // Mystery Deal step map straight to a real 4/5/6-bike SKU instead of
+  // guessing from unrelated earlier answers.
+  bikeCount?: 4 | 5 | 6;
+  // Set on the fold/storage questions — surfaces the Slow-Fold Strut and
+  // Shed Stand add-ons in the recommendation when relevant.
+  wantsStrut?: boolean;
+  wantsStand?: boolean;
+  // When true, `next` is ignored and the funnel instead routes to whichever
+  // guided step (bike-detail follow-up, or the hitch check when it's been
+  // deferred — see needsHitchAfterBikes below) is still outstanding,
+  // falling through to the fold-preference question once none are left.
+  // Only used by steps in that chain (2, 10, 18, 19, 20, 21) — see
+  // resolveNextStep in QuizFunnel.tsx.
+  chainNext?: boolean;
+  // Only set on step 3's "my bikes fit this" button. Bike Compatibility
+  // shoppers land on step 3 wanting bike questions, not a vehicle-fit
+  // tangent — so this defers the hitch check (2) until after the bike
+  // inventory/detail chain instead of asking it immediately.
+  needsHitchAfterBikes?: boolean;
+  // Small muted line under the label (an age range, a weight-band example)
+  // — set together with `cardButtons` on the step.
+  hint?: string;
+  // A longer reassurance line shown inline on the button itself (used for
+  // the "Not sure" option on the e-bike weight step) rather than requiring
+  // a click to reveal it.
+  note?: string;
+};
+
+export type ChoiceStep = {
+  type: "choice";
+  id: number;
+  // Small icon badge shown next to the question — purely visual, keeps the
+  // funnel feeling like a guided flow rather than a plain form.
+  icon?: LucideIcon;
+  question: string;
+  subtitle: string;
+  // Real, factual content shown above the buttons — this is what lets the
+  // quiz actually answer the shopper's real barrier (can I fit this? does
+  // my bike fit? how does this compare?) instead of just routing them
+  // toward the product page. Kept short by design: checklist renders as a
+  // plain checkmark list, facts as compact icon stat cards — neither is a
+  // paragraph.
+  checklist?: string[];
+  // Shows the receiver-diagram illustration above the checklist — only the
+  // hitch-fit step (2) sets this.
+  showHitchDiagram?: boolean;
+  facts?: { icon: LucideIcon; label: string; value: string }[];
+  note?: string;
+  // Renders buttons as a card grid (label + hint) instead of the default
+  // full-width pill list — used by the bike-detail steps where each option
+  // needs a short example/age-range under it.
+  cardButtons?: boolean;
+  buttons: ChoiceButton[];
+  // An expandable "Not sure?" self-check shown under the buttons — lets the
+  // shopper answer confidently without leaving the quiz to go measure
+  // something blind.
+  helper?: { label: string; body: string; showTireDiagram?: boolean };
+  // Small print under everything else (e.g. the e-bike battery-weight tip).
+  footerNote?: string;
+};
+
+// The six bike types the inventory step (10) tracks — order matches what's
+// actually common to carry, e-bikes and kids bikes right up front since
+// they're the ones that need a follow-up question.
+export type BikeCategory = "mountainBike" | "eBike" | "roadGravel" | "kidsBike" | "fatBike" | "hybrid";
+
+export const bikeCategories: { key: BikeCategory; label: string; icon: LucideIcon }[] = [
+  { key: "mountainBike", label: "Mountain bike", icon: Mountain },
+  { key: "eBike", label: "E-bike", icon: Zap },
+  { key: "roadGravel", label: "Road / gravel", icon: Route },
+  { key: "kidsBike", label: "Kids bike", icon: Baby },
+  { key: "fatBike", label: "Fat bike", icon: Snowflake },
+  { key: "hybrid", label: "Hybrid / commuter", icon: Building2 },
+];
+
+export type InventoryStep = {
+  type: "inventory";
+  id: number;
+  icon?: LucideIcon;
+  heading: string;
+  subtitle: string;
+  cta: string;
+  // A friendly, non-alarming reminder shown above the bike picker — this is
+  // the one step nearly every shopper passes through, so it's the best spot
+  // to set the 30 kg per-holder / 110 kg combined expectation up front,
+  // before it ever needs to become a warning later in the flow.
+  note?: string;
+};
+
+export type EmailStep = {
+  type: "email";
+  id: number;
+  heading: string;
+  body: string;
+  cta: string;
+  declineLabel: string;
+};
+
+export type TextStep = {
+  type: "text";
+  id: number;
+  icon?: LucideIcon;
+  heading: string;
+  placeholder: string;
+  cta: string;
+  next: number;
+};
+
+export type EndStep = {
+  type: "end";
+  id: number;
+  icon?: LucideIcon;
+  heading: string;
+  body: string[];
+};
+
+export type QuizStep = ChoiceStep | InventoryStep | EmailStep | TextStep | EndStep;
+
+export const START_STEP = 0;
+
+// Longest real path through the funnel — e.g. someone with a kids bike, a
+// fat bike, and a heavy e-bike hits every detail follow-up in the chain:
+// 0 → 1 → 3 → 2 → 10 → 18 → 19 → 20 → 21 → 11 → 12 → 6. Used for the
+// "Step X of Y" progress indicator — most shoppers take a much shorter
+// path since the bike-detail steps only appear when actually relevant.
+export const MAX_STEPS = 12;
+
+// Step 16 ("Comparing our own models") renders a live pricing table from the
+// real rackSizes prop instead of static copy here — see QuizFunnel.tsx.
+export const MODEL_COMPARE_STEP_ID = 16;
+
+export const quizSteps: Record<number, QuizStep> = {
+  0: {
+    type: "choice",
+    id: 0,
+    icon: Users,
+    question: "Which best describes you?",
+    subtitle: "Helps us tailor your recommendation",
+    buttons: [
+      { label: "Family Adventurer", next: 1, customerType: "family_adventures" },
+      { label: "Mountain Biking", next: 1, customerType: "mountain_biking" },
+      { label: "Cycling", next: 1, customerType: "cycling" },
+      { label: "Other", next: 1, customerType: "other", variant: "other" },
+    ],
+  },
+  1: {
+    type: "choice",
+    id: 1,
+    icon: Compass,
+    question: "What would help you decide?",
+    subtitle: "Choose one",
+    buttons: [
+      { label: "Vehicle Fit Confirmation", next: 2 },
+      { label: "Bike Compatibility", next: 3 },
+      { label: "Comparing Price/Options", next: 4 },
+      { label: "Buying Later (Not Urgent)", next: 10 },
+      { label: "Other", next: 7, variant: "other" },
+    ],
+  },
+  2: {
+    type: "choice",
+    id: 2,
+    icon: Car,
+    question: "Do you have a 50mm tow bar?",
+    subtitle: "Here's how to check in 10 seconds",
+    showHitchDiagram: true,
+    checklist: [
+      "Look under your rear bumper for a square 50mm (2\") receiver — the tow ball tongue slides into it",
+      "Ute, 4WD or SUV with a tow bar fitted? It's almost certainly a 50mm",
+      "Tow ball bolted to a fixed tongue with no square opening? That one won't take a hitch rack",
+      "Nothing there? A 50mm tow bar can be fitted to most vehicles",
+    ],
+    buttons: [
+      { label: "Yes, I've got one", next: 10, chainNext: true },
+      { label: "No / still not sure", next: 9 },
+    ],
+  },
+  3: {
+    type: "choice",
+    id: 3,
+    icon: Bike,
+    question: "Will your bikes actually fit?",
+    subtitle: "The real specs — not marketing fluff",
+    facts: [
+      { icon: Disc, label: "Wheel size", value: "21–29\" wheels" },
+      { icon: Ruler, label: "Tyre width", value: "Up to 3\" wide" },
+      { icon: Weight, label: "Per bike", value: "Up to 30 kg" },
+      { icon: Package, label: "Total capacity", value: "110 kg" },
+      { icon: Baby, label: "Smaller wheels", value: "16–20\" w/ bracket" },
+    ],
+    note: "The bikes that don't fit: true fat-tyre bikes with 4\"+ tyres, and e-bikes over the 30 kg per-holder rating (most cargo/moped-style e-bikes). Everything else is covered.",
+    buttons: [
+      { label: "Yep, my bikes fit this", next: 10, needsHitchAfterBikes: true },
+      { label: "I've got true fat-tyre bikes (4\"+ tyres)", next: 17, variant: "other" },
+    ],
+  },
+  4: {
+    type: "choice",
+    id: 4,
+    icon: Scale,
+    question: "What are you comparing?",
+    subtitle: "Choose one",
+    buttons: [
+      { label: "JB Racks vs. other brands", next: 15 },
+      { label: "Our own models against each other", next: MODEL_COMPARE_STEP_ID },
+    ],
+  },
+  15: {
+    type: "choice",
+    id: 15,
+    icon: ClipboardCheck,
+    question: "What actually matters when comparing racks",
+    subtitle: "The specs worth checking on any rack you're comparing — here's where JB Racks lands",
+    facts: [
+      { icon: Weight, label: "Weight rating", value: "30 kg/holder, 110 kg total" },
+      { icon: Car, label: "Tow bar fit", value: "50mm Class III, 450mm bar" },
+      { icon: ShieldCheck, label: "Wobble control", value: "Anti-wobble bracket incl." },
+      { icon: BadgeCheck, label: "Warranty", value: "4-Year" },
+    ],
+    buttons: [{ label: "Got it — find my size", next: 10 }],
+  },
+  [MODEL_COMPARE_STEP_ID]: {
+    type: "choice",
+    id: MODEL_COMPARE_STEP_ID,
+    icon: BarChart3,
+    question: "Compare our 4, 5 & 6-bike racks",
+    subtitle: "Real specs and live pricing side by side",
+    buttons: [{ label: "Pick my size", next: 10 }],
+  },
+  10: {
+    type: "inventory",
+    id: 10,
+    icon: Bike,
+    heading: "What bikes are you carrying?",
+    subtitle: "Tap + for each bike. If it has a motor, count it as an e-bike.",
+    note: "Good to know: each wheel holder carries up to 30 kg on its own, and the whole rack carries up to 110 kg combined — plenty for most setups, just worth keeping in mind if you're loading a few heavier bikes together.",
+    cta: "Next",
+  },
+  18: {
+    type: "choice",
+    id: 18,
+    icon: CircleDot,
+    question: "Your kids bike — what wheel size?",
+    subtitle: "Choose one",
+    cardButtons: true,
+    buttons: [
+      { label: "16 in", hint: "Ages 4 to 6", next: 11, chainNext: true },
+      { label: "20 in", hint: "Ages 6 to 9", next: 11, chainNext: true },
+      { label: "24 in", hint: "Ages 8 to 12", next: 11, chainNext: true },
+    ],
+    helper: {
+      label: "Not sure? Check the tyre sidewall",
+      body: "Look for a size printed right on the tyre, like \"20 x 1.75\" — the first number is the wheel size in inches.",
+    },
+  },
+  19: {
+    type: "choice",
+    id: 19,
+    icon: Ruler,
+    question: "Your fat bike — how wide are the tyres?",
+    subtitle: "Choose one",
+    cardButtons: true,
+    buttons: [
+      { label: "Up to 3 in", next: 11, chainNext: true },
+      { label: "3 to 4 in", next: 17 },
+      { label: "4 to 5 in", next: 17 },
+    ],
+    helper: {
+      label: "Not sure? Your tyre tells you",
+      body: "Look at the printed marking on the tyre sidewall. The first number is your wheel size, the second is your tyre width in inches. \"26 x 4.0\" means a 26 in wheel with a 4 in tyre.",
+      showTireDiagram: true,
+    },
+  },
+  20: {
+    type: "choice",
+    id: 20,
+    icon: Weight,
+    question: "Your e-bike — how heavy is it?",
+    subtitle: "The spec sticker on the frame or the brand's website has the exact figure.",
+    cardButtons: true,
+    buttons: [
+      { label: "Under 22 kg", hint: "Most city and road e-bikes", next: 11, chainNext: true },
+      { label: "22 to 30 kg", hint: "Most e-MTBs", next: 11, chainNext: true },
+      { label: "30 to 36 kg", hint: "Fat tyre and heavy duty e-bikes", next: 21 },
+      { label: "Over 36 kg", hint: "Moped style, cargo", next: 22 },
+      {
+        label: "Not sure",
+        next: 21,
+        note: "No problem. We'll assume it's right at the 30-36 kg mark so your fit check is safe, and the next step covers a 30 second way to check the exact weight.",
+      },
+    ],
+    footerNote:
+      "Tip: the battery is usually 3 to 4 kg and comes off before loading. Heads up: 30 kg is the limit per wheel holder — the rack's total combined capacity across every bike is 110 kg, so keep that in mind too if you're loading more than one heavier bike.",
+  },
+  21: {
+    type: "choice",
+    id: 21,
+    icon: AlertTriangle,
+    question: "Heads up on that e-bike",
+    subtitle: "Still worth knowing before you load it",
+    note: "Each wheel holder is rated to 30 kg, so this one's right at the edge — and the rack's total combined capacity is 110 kg across every bike, so weigh that against the rest of your lineup too, not just this one bike. Put it in the lowest slot and double-check the strap tension before you drive.",
+    buttons: [{ label: "Got it, continue", next: 11, chainNext: true }],
+  },
+  22: {
+    type: "choice",
+    id: 22,
+    icon: AlertTriangle,
+    question: "That one's heavier than we're rated for",
+    subtitle: "Worth knowing before you buy",
+    note: "Wheel holders are rated to 30 kg each, and the rack's total combined capacity is 110 kg across every bike — most cargo and moped-style e-bikes run well past the per-holder limit on their own, and we can't guarantee a safe, secure fit for it. If that's the only heavy bike in the mix, it might be worth carrying separately; email reed@jbracks.com and we can talk through options.",
+    buttons: [{ label: "Got it, continue", next: 11, chainNext: true }],
+  },
+  11: {
+    type: "choice",
+    id: 11,
+    icon: ChevronsDown,
+    question: "Want your rack to ease down slow and controlled?",
+    subtitle: "Choose one",
+    buttons: [
+      { label: "Yes, that matters to me", next: 12, wantsStrut: true, variant: "other" },
+      { label: "Not fussed either way", next: 12 },
+    ],
+  },
+  12: {
+    type: "choice",
+    id: 12,
+    icon: Home,
+    question: "Want a dedicated spot to keep it stored neatly when it's off the car?",
+    subtitle: "Choose one",
+    buttons: [
+      { label: "Yes, I'd like that", next: 6, wantsStand: true, variant: "other" },
+      { label: "No, I've got storage sorted", next: 6 },
+      { label: "Not sure yet", next: 6, wantsStand: true },
+    ],
+  },
+  6: {
+    type: "email",
+    id: 6,
+    heading: "MYSTERY DEAL: UNLOCKED",
+    body: "Sign up to receive a surprise discount (on top of current discount)",
+    cta: "REVEAL THE OFFER",
+    declineLabel: "No I'm still not ready",
+  },
+  7: {
+    type: "text",
+    id: 7,
+    icon: MessageSquare,
+    heading: "Tell us in your own words - what's the one thing stopping you?",
+    placeholder: "Tell us...",
+    cta: "SUBMIT REASON",
+    next: 8,
+  },
+  8: {
+    type: "end",
+    id: 8,
+    icon: CheckCircle2,
+    heading: "Thanks for answering our questions. We hope you're more clear on what's needed.",
+    body: ["If you need more help reach out to reed@jbracks.com and we can help you with your pre-purchase questions."],
+  },
+  9: {
+    type: "end",
+    id: 9,
+    icon: AlertTriangle,
+    heading: "No 50mm tow bar yet — here's what to do next.",
+    body: [
+      "JB Racks needs a 50mm (2-inch) Class III receiver to mount to, so this isn't the right time to buy just yet.",
+      "The good news: it's a common fit at most tow bar specialists and mobile installers, often done same-day.",
+      "Once it's on, come back and finish the quiz — or email support@jbracks.com if you want a hand figuring out the right tow bar for your vehicle.",
+    ],
+  },
+  17: {
+    type: "end",
+    id: 17,
+    icon: AlertTriangle,
+    heading: "That tyre's wider than our wheel holders.",
+    body: [
+      "Wheel holders top out at 3\" wide, and your tyres are over that — we'd rather flag it now than have it not seat properly at home.",
+      "If most of your bikes are standard, road, hybrid, mountain or e-bikes with just one wide-tyre bike in the mix, email reed@jbracks.com — we can talk through workarounds.",
+    ],
+  },
+};

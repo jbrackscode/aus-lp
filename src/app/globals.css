@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/* Gotham Pro — body/UI typeface. Files already in /public/fonts/gotham. */
+@font-face {
+  font-family: "Gotham Pro";
+  src:
+    url("/fonts/gotham/GothamPro.woff2") format("woff2"),
+    url("/fonts/gotham/GothamPro.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Gotham Pro";
+  src:
+    url("/fonts/gotham/GothamPro-Italic.woff2") format("woff2"),
+    url("/fonts/gotham/GothamPro-Italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Gotham Pro";
+  src:
+    url("/fonts/gotham/GothamPro-Medium.woff2") format("woff2"),
+    url("/fonts/gotham/GothamPro-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Gotham Pro";
+  src:
+    url("/fonts/gotham/GothamPro-Bold.woff2") format("woff2"),
+    url("/fonts/gotham/GothamPro-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Gotham Pro";
+  src:
+    url("/fonts/gotham/GothamPro-BoldItalic.woff2") format("woff2"),
+    url("/fonts/gotham/GothamPro-BoldItalic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Gotham Pro";
+  src:
+    url("/fonts/gotham/GothamPro-Black.woff2") format("woff2"),
+    url("/fonts/gotham/GothamPro-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Tungsten — display/headline typeface. Only tungsten-bold.woff2 actually
+ * exists in /public/fonts/tungsten (verified on disk) — the previous rules
+ * here referenced Tungsten-Semibold/-Black plus .woff fallbacks that don't
+ * exist, and even the Bold rule had the wrong case ("Tungsten-Bold.woff2"
+ * vs. the real "tungsten-bold.woff2"). That's harmless on case-insensitive
+ * local filesystems but 404/503s on Vercel's case-sensitive Linux storage,
+ * which is exactly what was showing up in production. One real weight,
+ * used for every Tungsten request — still condensed/bold everywhere it's
+ * applied, just without separate faces per weight. Add more @font-face
+ * blocks here (with matching real files) if additional weights land.
+ */
+@font-face {
+  font-family: "Tungsten";
+  src: url("/fonts/tungsten/tungsten-bold.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+
+  /* Colors lifted directly from the live jb-racks-lp-demonstration-old page. */
+  --color-brand-black: #1a1a1a;
+  --color-brand-green: #009d31;
+  --color-brand-green-light: #e6f6ef;
+  --color-brand-green-dark: #0f7a52;
+  --color-brand-red: #ff1f3d;
+  --color-brand-orange: #ff6000;
+  --color-brand-yellow: #fff700;
+  --color-brand-star: #f5a623;
+  --color-brand-line: #e2e2e2;
+  --color-brand-cream: #f6f5f2;
+
+  /* Newsroom (advertorial) template palette — separate from the demo LP. */
+  --color-nr-orange: #f97316;
+  --color-nr-orange-dark: #ea580c;
+  --color-nr-orange-light: #fff3e9;
+  --color-nr-ink: #1a1a1a;
+  --color-nr-ink-mid: #4b5563;
+  --color-nr-ink-muted: #9ca3af;
+  --color-nr-rule: #e5e7eb;
+  --color-nr-bg: #f9fafb;
+  --color-nr-green: #16a34a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-brand-black: var(--color-brand-black);
+  --color-brand-green: var(--color-brand-green);
+  --color-brand-green-light: var(--color-brand-green-light);
+  --color-brand-green-dark: var(--color-brand-green-dark);
+  --color-brand-red: var(--color-brand-red);
+  --color-brand-orange: var(--color-brand-orange);
+  --color-brand-yellow: var(--color-brand-yellow);
+  --color-brand-star: var(--color-brand-star);
+  --color-brand-line: var(--color-brand-line);
+  --color-brand-cream: var(--color-brand-cream);
+
+  --color-nr-orange: var(--color-nr-orange);
+  --color-nr-orange-dark: var(--color-nr-orange-dark);
+  --color-nr-orange-light: var(--color-nr-orange-light);
+  --color-nr-ink: var(--color-nr-ink);
+  --color-nr-ink-mid: var(--color-nr-ink-mid);
+  --color-nr-ink-muted: var(--color-nr-ink-muted);
+  --color-nr-rule: var(--color-nr-rule);
+  --color-nr-bg: var(--color-nr-bg);
+  --color-nr-green: var(--color-nr-green);
+
+  --font-sans: "Gotham Pro", ui-sans-serif, system-ui, Arial, sans-serif;
+  --font-display: "Tungsten", "Arial Narrow", "Helvetica Neue", sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+@keyframes bikeracks-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Track is two identical copies back-to-back — -50% moves exactly one
+       copy's width, so the loop lands on a pixel-identical frame. */
+    transform: translateX(-50%);
+  }
+}
+
+/* Subtle attention pulse for urgency/savings badges — matches the same
+   treatment used on jbracks.com.au's product page savings badge. */
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+/* iMessage-style chat bubble tails (FaqChat.tsx) — a small clipped corner
+   in the bubble's own background color, so it works for both the gray
+   "received" bubble and the blue "sent" bubble without separate variants. */
+.imsg-bubble {
+  position: relative;
+}
+.imsg-bubble-left::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -10px;
+  width: 22px;
+  height: 18px;
+  background: inherit;
+  clip-path: polygon(100% 0, 100% 100%, 0% 100%);
+}
+.imsg-bubble-right::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+  width: 22px;
+  height: 18px;
+  background: inherit;
+  clip-path: polygon(0 0, 100% 100%, 0% 100%);
+}
+
+/* Racks in Use — specific review photos hidden from the wall/carousel by
+   index (see rack-photo-N classes in RacksInUse.tsx). */
+.rack-photo-17,
+.rack-photo-19,
+.rack-photo-20,
+.rack-photo-22,
+.rack-photo-24 {
+  display: none;
+}

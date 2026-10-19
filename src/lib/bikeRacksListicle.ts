@@ -1,0 +1,246 @@
+// Editorial content for /lp-bike-racks. Layout/section order is modeled on
+// a design mockup the user supplied (ticker → hero → problem → reasons →
+// sizes → tested → compare → testimonials → bundle → warranty → FAQ → final
+// CTA), restyled with our own type/color system. Copy is the user's, kept
+// close to verbatim; anything the mockup itself flagged as an unconfirmed
+// placeholder (rack weight/width/height, the finish/load/durability test
+// claims) is either dropped in favor of verified specs or kept with the
+// same honesty caveat the mockup used — never presented as fact we haven't
+// confirmed.
+
+export const ticker = [
+  "4-YEAR WARRANTY ON EVERY RACK",
+  "FREE SHIPPING TO MAJOR CITIES & REGIONAL AREAS",
+  "20,000+ RACKS ON THE ROAD",
+  "E-BIKE RATED — 30 KG PER WHEEL HOLDER",
+];
+
+export const hero = {
+  kicker: "4, 5 & 6 BIKE VERTICAL TOW BAR RACK",
+  headline: "Are You Struggling to Get the Right Bike Rack?",
+  sub: "A tow bar rack that's rated for the job - not the rack that was cheapest to stock. JB is engineered to carry 30 kg per wheel holder before the wobble, the scratched frame, or the strap failure ever gets the chance to happen.",
+  ctaPrimary: "For Just $850",
+  ctaSecondary: "See why it's different",
+  trustStrip: [
+    { value: "4-Year", label: "Warranty" },
+    { value: "30 kg", label: "per wheel holder" },
+    { value: "20,000+", label: "customers" },
+    { value: "4-8 Day", label: "free shipping" },
+  ],
+};
+
+// Masthead gallery — modeled on IM8's hero carousel: mixed slide types
+// (plain image, a stats slide, a "what this replaces" grid) rather than one
+// static photo. Every stat and image here is real — no fabricated experts
+// or invented numbers, unlike IM8's "doctors" panel slide, which we skip.
+export type HeroSlide =
+  | { type: "image"; image: string; alt: string; pill?: string; badge?: { num: string; label: string }; fit?: "cover" | "contain" }
+  | { type: "stats"; headline: string; stats: { value: string; label: string }[] }
+  | { type: "replaces"; headline: string; items: string[] };
+
+// The stats/replaces/ambassador slides are still valid HeroSlide variants
+// (see the type above), just commented out below rather than deleted, in
+// case they come back in. (The US build's two US-location lifestyle shots
+// were dropped from this AU build entirely.)
+export const heroGallery: HeroSlide[] = [
+  // The five slides below all have their headline/copy baked directly into
+  // the graphic (designed as standalone social posts), so none of them set
+  // a pill/badge — that would just duplicate what's already on the image.
+  {
+    type: "image",
+    image: "/images/media-new-way.webp",
+    alt: "JB Racks vertical bike rack — meet the vertical rack, the new way to move bikes",
+  },
+  {
+    type: "image",
+    image: "/images/media-new-way2.webp",
+    alt: "JB Racks vertical bike rack feature callouts — carries 4 bikes, UV-coated rubber straps, tie-down bottom straps, optional slow-fold strut",
+  },
+  {
+    type: "image",
+    image: "/images/media-15000-sold.webp",
+    alt: "Trusted on the trail — 20,000+ JB Racks sold and counting",
+  },
+  // {
+  //   type: "image",
+  //   image: "https://cdn.shopify.com/s/files/1/0694/1117/6660/files/6-bike-rack-black-new-photo-1_43f5e1c9-1783-44b6-b132-7e8c47027995.webp?v=1767759172",
+  //   alt: "JB Vertical Bike Rack loaded with six bikes",
+  //   badge: { num: "110 kg", label: "Total combined load rating, tested fully loaded" },
+  // },
+  // {
+  //   type: "image",
+  //   image: "/images/bikeracks/whole-crew.jpg",
+  //   alt: "Mum loading a JB Racks vertical rack while kids wait on their bikes",
+  //   pill: "Room for the whole crew",
+  // },
+  // {
+  //   type: "stats",
+  //   headline: "TRUSTED ON THE TRAIL",
+  //   stats: [
+  //     { value: "4.7/5", label: "Average rating" },
+  //     { value: "196", label: "Verified reviews" },
+  //     { value: "95%", label: "Would recommend" },
+  //     { value: "20,000+", label: "Customers" },
+  //   ],
+  // },
+  // {
+  //   type: "replaces",
+  //   headline: "ONE RACK REPLACES",
+  //   items: ["Roof rack rattle", "Platform rack sway", "Bike shop rentals", "A second trip for straps"],
+  // },
+  // {
+  //   type: "image",
+  //   image: "/images/bikeracks/ambassadors.jpg",
+  //   alt: "Mike Guy and Adam Miller, mountain biking influencers, actively supported by riders",
+  //   pill: "Backed by real riders",
+  //   fit: "contain",
+  // },
+];
+
+export const problem = {
+  headline: "Your tow bar works. Here's what it doesn't do.",
+  lede: "A 50mm receiver will hold almost anything you bolt to it. It won't tell you whether what's bolted to it was actually designed for a 30 kg e-bike, or for the 15 kg road bikes racks were built around a decade ago.",
+  items: [
+    { mark: "01", title: "Weight ratings that predate e-bikes", body: "A lot of racks on the market were designed before e-bikes were common, and it shows the first time you load one on." },
+    { mark: "02", title: "Sway you feel through the whole cabin", body: "Without something locking the rack to the tow bar itself, every pothole becomes a rattle you can hear from the driver's seat." },
+    { mark: "03", title: "Frame contact where straps should be", body: "Hard plastic cradles and bare metal hooks are how a $5,000 frame ends up with a $50 problem." },
+    { mark: "04", title: "A price that's paying for a badge, not steel", body: "Plenty of the premium-looking racks add a few hundred dollars for a name — not for anything that changes how securely your bikes travel." },
+  ],
+};
+
+export const reasonsEyebrow = "WHY FAMILIES ARE SWITCHING";
+export const reasonsHeadline = "5 reasons riders are moving to the JB Vertical Rack before their old one lets them down";
+
+// Same 5 image+copy pairs as the feature rows on /lp-demonstration
+// (src/lib/config.ts featureRows) — reused verbatim here, just numbered and
+// restyled to match this page's reason-block design.
+export const reasons = [
+  {
+    number: "01",
+    title: "Unload Fast. Ride Sooner.",
+    body: "Pull into the trailhead and get your bikes off in well under a minute instead of wrestling with straps and buckles. More time on the trail, less time at the tailgate.",
+    image: "/images/jb-racks_ready_in_seconds.jpg",
+  },
+  {
+    number: "02",
+    title: "More Rides. Low Upfront Cost.",
+    body: "Ride now, pay later. Split your JB Rack into easy payments at checkout and get the whole crew on the trails this weekend. Built to last for years of adventures, it's an affordable way to get out more without the big upfront cost.",
+    image: "/images/media-affordable.webp",
+  },
+  {
+    number: "03",
+    title: "Rubber-Gripped, Scratch-Free Hold",
+    body: "Rubber straps grip the tyres, not the frame, so there's minimal contact with your bike's paint and components. Less rattling against metal means less wear on the ride you actually care about.",
+    image: "/images/jb-racks_easy_to_attach.jpg",
+    video: "/videos/2_bike-swingup-closeup.mp4",
+  },
+  {
+    number: "04",
+    title: "Versatile Hitch Fit",
+    body: "The 450mm hitch bar clears spare wheels and extended trays on almost any vehicle, and fits 50mm (2\") Class III tow bar receivers — the most common tow hitch in Australia.",
+    image: "/images/jb-racks_fits_almost_any_vehicle.jpg",
+  },
+  {
+    number: "05",
+    title: "Arrive. Unload. Ride.",
+    body: "Pull into the trailhead and unclip your bike in seconds — no wrestling with straps or buckles. Less time setting up, more time on the trail.",
+    image: "/images/jb-racks_park_and_ride.jpg",
+  },
+];
+
+export const sizesNote =
+  "All sizes fit a 50mm (2\") Class III tow bar receiver and 21–29\" wheels with tyres up to 3\" wide.";
+
+export const tested = {
+  eyebrow: "ENGINEERED & TESTED",
+  headline: "Built to a standard, not just a budget",
+  cells: [
+    { label: "MATERIAL", title: "Q235B structural steel", body: "Rated to ~235 MPa minimum yield strength — equivalent to European S235JR structural steel." },
+    { label: "FINISH", title: "Polyester powder coat", body: "A pure polyester finish over pretreated steel, rated for 250–500 hours of ASTM B117 salt-spray exposure and built to hold its colour through 3–5 years of harsh Australian sun." },
+    { label: "LOAD", title: "110 kg combined capacity, verified fully loaded", body: "Target: static load test at rated capacity plus a safety margin before sign-off." },
+    { label: "DURABILITY", title: "Highway vibration simulation", body: "Target: simulated highway-mile vibration cycle with no hardware loosening." },
+  ],
+  footnote:
+    "The finish, load, and durability claims above are internal test targets, not yet independently verified — treat as directional until confirmed test data replaces them.",
+};
+
+export const compare = {
+  eyebrow: "HOW IT STACKS UP",
+  headline: "Everything the $1,400 racks do. For under $950.",
+  columns: ["Feature", "JB Vertical Rack", "Typical $1,400 rack"],
+  rows: [
+    { feature: "Roll-in loading, 3 angles", jb: true, other: true },
+    { feature: "Lightweight design", jb: true, other: false },
+    { feature: "Pedal tie-down straps included", jb: true, other: false },
+    { feature: "Adjustable bar for smaller bikes", jb: true, other: false },
+    { feature: "Optional slow-fold strut", jb: true, other: false },
+    { feature: "Free shipping", jb: true, other: true },
+  ],
+  callout: "Keep $300-$400 in your pocket — based on a selection of comparable hitch racks currently on the market.",
+};
+
+export const testimonialsEyebrow = "20,000+ CUSTOMERS";
+export const testimonialsHeadline = "What riders say after it's loaded up and out the driveway";
+
+export const videoQuote = {
+  avatar: "/images/bikeracks/mtb-rad-dad-avatar.webp",
+  quote: "I really like this rack, it's my go to rack when I have family outings!",
+  name: "Adam Miller",
+  role: "MTB Rad Dad",
+};
+
+export const bundle = {
+  eyebrow: "BUNDLE & SAVE",
+  headline: "Most 5-bike and 6-bike orders add the stand and strut",
+  body: "A shed stand makes storing a fully-built rack painless, and the slow-fold strut turns lifting a loaded rack into a one-hand job.",
+  barLabel: "Frequently bundled with 5 & 6 bike racks",
+};
+
+export const warranty = {
+  headline: "4-Year Warranty",
+  body: "At JB Racks, we take pride in the research and engineering that go into every hitch rack. We demand the very best — top-quality racks with structural integrity — so we know that each rack is built to take a beating. Our four-year guarantee will give you peace of mind, knowing you can trust JB Racks to take this worry off your shoulders.",
+};
+
+export const faqs = [
+  {
+    question: "How long does shipping take?",
+    answer: "Free shipping typically takes 4–8 business days depending on your location. Shipping is free to major cities and major regional areas — contact support for a quote outside those areas.",
+  },
+  {
+    question: "Will this fit a car with a spare wheel on the back?",
+    answer: "Yes — the 450mm hitch bar is designed to clear spare wheels and extended trays. We recommend pairing it with an anti-wobble mechanism and a 16mm pin for a properly secured fit.",
+  },
+  {
+    question: "Do I need a number plate holder?",
+    answer: "If your bikes block the car's number plate or tail lights, Australian road rules require a visible plate and working lights at the back of the load. Our Number Plate Holder has built-in brake, indicator and tail lights, plugs into your tow bar socket, and straps on in seconds — no tools needed.",
+  },
+  {
+    question: "What's the rack actually made from?",
+    answer: "Q235B structural steel (rated to ~235 MPa yield strength, equivalent to European S235JR), finished with a polyester powder coat for protection against wear, abrasion, and corrosion in everyday use.",
+  },
+  {
+    question: "Do I need any tools I don't already have?",
+    answer: "Assembly takes about 30-45 minutes with basic hand tools. A full video walkthrough and printable fitment guide are included for every size.",
+  },
+  {
+    question: "What if something's not right?",
+    answer: "Every rack is backed by a 4-year warranty and our support team. If anything's off with your order, contact us and we'll sort it out.",
+  },
+];
+
+// By this point in the page the shopper has already seen the proof
+// (reviews), the risk-reversal (warranty, free shipping) and the
+// comparison (why vertical beats a platform rack) — the close should read
+// like a confident summary, not another pitch. Keep the real countdown
+// (it's an honest deadline), but let it sit quietly near the button rather
+// than lead with alarm-style urgency.
+export const finalCta = {
+  headline: "Ready to ride?",
+  body: "Free shipping, a 4-year warranty, and a rack built for exactly what you're hauling — pick your size below.",
+  cta: "For Just $850",
+};
+
+export const stickyCta = {
+  text: "20,000+ riders already switched",
+  cta: "Build My Rack",
+};
