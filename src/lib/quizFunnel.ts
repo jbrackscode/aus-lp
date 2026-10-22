@@ -28,8 +28,6 @@ import {
   AlertTriangle,
   ChevronsDown,
   Home,
-  MessageSquare,
-  CheckCircle2,
   Compass,
   ShieldCheck,
   BadgeCheck,
@@ -177,6 +175,14 @@ export type QuizStep = ChoiceStep | InventoryStep | EmailStep | TextStep | EndSt
 
 export const START_STEP = 0;
 
+// Named entry points for linking straight into the middle of the quiz, e.g.
+// /lp-quiz?step=decide opens it on "What would help you decide?" instead of
+// the opening "Which best describes you?" step. Skipping step 0 is safe —
+// customer_type falls back to being inferred from the bike inventory.
+export const DEEP_LINK_STEPS: Record<string, number> = {
+  decide: 1,
+};
+
 // Longest real path through the funnel — e.g. someone with a kids bike, a
 // fat bike, and a heavy e-bike hits every detail follow-up in the chain:
 // 0 → 1 → 3 → 2 → 10 → 18 → 19 → 20 → 21 → 11 → 12 → 6. Used for the
@@ -212,8 +218,7 @@ export const quizSteps: Record<number, QuizStep> = {
       { label: "Vehicle Fit Confirmation", next: 2 },
       { label: "Bike Compatibility", next: 3 },
       { label: "Comparing Price/Options", next: 4 },
-      { label: "Buying Later (Not Urgent)", next: 10 },
-      { label: "Other", next: 7, variant: "other" },
+      { label: "Other", next: 10, variant: "other" },
     ],
   },
   2: {
@@ -399,22 +404,6 @@ export const quizSteps: Record<number, QuizStep> = {
     body: "Sign up to receive a surprise discount (on top of current discount)",
     cta: "REVEAL THE OFFER",
     declineLabel: "No I'm still not ready",
-  },
-  7: {
-    type: "text",
-    id: 7,
-    icon: MessageSquare,
-    heading: "Tell us in your own words - what's the one thing stopping you?",
-    placeholder: "Tell us...",
-    cta: "SUBMIT REASON",
-    next: 8,
-  },
-  8: {
-    type: "end",
-    id: 8,
-    icon: CheckCircle2,
-    heading: "Thanks for answering our questions. We hope you're more clear on what's needed.",
-    body: ["If you need more help reach out to reed@jbracks.com and we can help you with your pre-purchase questions."],
   },
   9: {
     type: "end",

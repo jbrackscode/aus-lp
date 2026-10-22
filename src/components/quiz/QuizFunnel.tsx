@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import confetti from "canvas-confetti";
 import { ArrowLeft, CheckCircle2, HelpCircle, Info, type LucideIcon } from "lucide-react";
 import {
   quizSteps,
   START_STEP,
+  DEEP_LINK_STEPS,
   MAX_STEPS,
   MODEL_COMPARE_STEP_ID,
   bikeCategories,
@@ -137,9 +138,30 @@ function TireDiagram() {
   );
 }
 
+// The URL's ?step= never changes while the quiz is open, so there's nothing
+// to subscribe to — the store is read once per render.
+function subscribeNoop() {
+  return () => {};
+}
+
+function getDeepLinkedStep(): number {
+  const name = new URLSearchParams(window.location.search).get("step");
+  return (name ? DEEP_LINK_STEPS[name] : undefined) ?? START_STEP;
+}
+
 export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps) {
-  const [stepId, setStepId] = useState(START_STEP);
-  const [history, setHistory] = useState<number[]>([START_STEP]);
+  // Where this playthrough starts — START_STEP unless the URL deep-links
+  // somewhere else via ?step=<name> (see DEEP_LINK_STEPS). Read through
+  // useSyncExternalStore so the server render (and hydration) uses
+  // START_STEP and the client then switches to the linked step, with no
+  // hydration mismatch. reset() returns here too, so retaking a deep-linked
+  // quiz starts at the same step again.
+  const entryStep = useSyncExternalStore(subscribeNoop, getDeepLinkedStep, () => START_STEP);
+  // Steps visited after the entry step — history is the full stack of
+  // visited step ids, and the current step is always its top.
+  const [path, setPath] = useState<number[]>([]);
+  const history = [entryStep, ...path];
+  const stepId = history[history.length - 1];
   // Every answer, keyed by step id — this is exactly what gets POSTed to
   // /api/quiz-submit alongside the email/name/text fields.
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -210,8 +232,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   if (!open) return null;
 
   function goTo(next: number) {
-    setHistory((h) => [...h, next]);
-    setStepId(next);
+    setPath((p) => [...p, next]);
   }
 
   // Pops back to the previous step in the actual path taken — history is
@@ -219,15 +240,12 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // one. Picking a different answer from there appends a fresh path onto
   // the (now shorter) history exactly like goTo always has.
   function goBack() {
-    if (history.length <= 1) return;
-    const prevStepId = history[history.length - 2];
-    setHistory((h) => h.slice(0, -1));
-    setStepId(prevStepId);
+    if (path.length === 0) return;
+    setPath((p) => p.slice(0, -1));
   }
 
   function reset() {
-    setStepId(START_STEP);
-    setHistory([START_STEP]);
+    setPath([]);
     setAnswers({});
     setInventory(ZERO_INVENTORY);
     setCustomerType(null);
