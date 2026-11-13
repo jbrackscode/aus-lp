@@ -17,6 +17,11 @@ export const product = {
   productUrl: `${storeUrl}/products/4-e-bike-rack`,
   variantId: process.env.NEXT_PUBLIC_SHOPIFY_VARIANT_ID ?? "",
   saleEndsAt: process.env.NEXT_PUBLIC_SALE_ENDS_AT ?? "2026-11-30T23:59:59+11:00",
+  // Black Friday window for /lp-demo-black-friday only, in Sydney time
+  // (AEDT). Both drive the countdowns and the sale-progress bar
+  // (SaleProgress).
+  blackFridayStartsAt: process.env.NEXT_PUBLIC_BLACK_FRIDAY_STARTS_AT ?? "2026-10-22T00:00:00+11:00",
+  blackFridayEndsAt: process.env.NEXT_PUBLIC_BLACK_FRIDAY_ENDS_AT ?? "2026-11-30T23:59:59+11:00",
 };
 
 // Each row also carries a `video` — the best contextual match from
@@ -129,7 +134,7 @@ export const faqs = [
   },
   {
     question: "Is shipping really free?",
-    answer: "Yes — free shipping to major cities and major regional areas, with delivery typically in 4–8 business days. Reach out to our team for a quote if you're outside those areas.",
+    answer: "Yes - shipping is free to metro and major regional areas, with delivery typically in 4-7 business days. Remote areas require a shipping fee - reach out to our team for a quote.",
   },
   {
     question: "How long does assembly take?",
