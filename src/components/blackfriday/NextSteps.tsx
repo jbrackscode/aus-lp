@@ -87,7 +87,7 @@ const afterOrder = [
     title: "Check out",
     body: "Pay in full, or split it into 4 interest-free payments with Afterpay. Free metro and major regional shipping is applied automatically - no code needed.",
   },
-  { title: "Your rack ships", body: "Free delivery to your door, typically in 4‑7 business days to metro and major regional areas." },
+  { title: "Your rack ships", body: "Free delivery to metro and major regional areas, usually in 4–7 business days. Remote areas calculated at checkout." },
   {
     title: "You assemble it",
     body: "The rack needs assembling when it arrives - most riders finish in 30‑45 minutes with the step-by-step video and printable build guide.",
