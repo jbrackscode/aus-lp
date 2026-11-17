@@ -57,7 +57,7 @@ export const rackSizes: RackSize[] = [
     label: "4 Bikes",
     sublabel: "Small families",
     handle: "4-e-bike-rack",
-    price: 749,
+    price: 699,
     compareAtPrice: 950,
     imagesByColor: {
       Black: [
@@ -89,13 +89,13 @@ export const rackSizes: RackSize[] = [
     variants: { Black: 51043382821183, "Velo Turquoise": 51041178714431, "Leaf Green": 51480592220479 },
     standBundle: {
       handle: "4-bike-rack-and-stand-bundle",
-      price: 950,
+      price: 899,
       compareAtPrice: 1250,
       variants: { Black: 54011216298303, "Velo Turquoise": 54011216331071, "Leaf Green": 54011216363839 },
     },
     fullBundle: {
       handle: "4-bike-rack-strut-and-stand-bundle",
-      price: 1050,
+      price: 949,
       compareAtPrice: 1500,
       variants: { Black: 51300629709119, "Velo Turquoise": 51300629807423, "Leaf Green": 51520618987839 },
     },
@@ -106,7 +106,7 @@ export const rackSizes: RackSize[] = [
     sublabel: "Room to grow",
     badge: "Most Popular",
     handle: "5-e-bike-rack",
-    price: 749,
+    price: 699,
     compareAtPrice: 950,
     imagesByColor: {
       Black: [
@@ -138,13 +138,13 @@ export const rackSizes: RackSize[] = [
     variants: { Black: 51043406184767, "Velo Turquoise": 50824881996095, "Leaf Green": 51480585568575 },
     standBundle: {
       handle: "5-bike-rack-and-stand-bundle",
-      price: 950,
+      price: 899,
       compareAtPrice: 1250,
       variants: { Black: 54011220001087, "Velo Turquoise": 54011220033855, "Leaf Green": 54011220066623 },
     },
     fullBundle: {
       handle: "5-bike-rack-strut-and-stand-bundle",
-      price: 1050,
+      price: 949,
       compareAtPrice: 1500,
       variants: { Black: 51300653171007, "Velo Turquoise": 51300653269311, "Leaf Green": 51520617840959 },
     },
@@ -154,7 +154,7 @@ export const rackSizes: RackSize[] = [
     label: "6 Bikes",
     sublabel: "The whole crew",
     handle: "6-e-bike-rack",
-    price: 749,
+    price: 699,
     compareAtPrice: 950,
     imagesByColor: {
       Black: [
@@ -186,13 +186,13 @@ export const rackSizes: RackSize[] = [
     variants: { Black: 50817377894719, "Velo Turquoise": 50817379303743, "Leaf Green": 51480593334591 },
     standBundle: {
       handle: "6-bike-rack-and-stand-bundle",
-      price: 950,
+      price: 899,
       compareAtPrice: 1250,
       variants: { Black: 54011225211199, "Velo Turquoise": 54011225243967, "Leaf Green": 54011225276735 },
     },
     fullBundle: {
       handle: "6-bike-rack-strut-and-stand-bundle",
-      price: 1050,
+      price: 949,
       compareAtPrice: 1500,
       variants: { Black: 51300656873791, "Velo Turquoise": 51300656972095, "Leaf Green": 51520617513279 },
     },
@@ -208,8 +208,8 @@ const AU_CDN = "https://cdn.shopify.com/s/files/1/0833/3767/5071/files";
 // through real bundle SKUs (rack + stand, rack + stand + strut — see
 // standBundle/fullBundle above) rather than an upsell-app discount, so
 // garageStand.price and slowFoldStrut.price here are the *in-bundle*
-// prices: the step from rack → stand bundle ($850 → $950) and from stand
-// bundle → full bundle ($950 → $1,050). bikeRacksLive.ts recomputes both
+// prices: the step from rack → stand bundle ($699 → $899) and from stand
+// bundle → full bundle ($899 → $949). bikeRacksLive.ts recomputes both
 // from the live bundle prices, so they never drift from what checkout
 // charges. compareAtPrice is each product's standalone RRP.
 //
@@ -222,7 +222,7 @@ export const addons = {
   garageStand: {
     name: "Shed Stand",
     note: "Stores your rack off the car when it's not in use",
-    price: 100,
+    price: 200,
     compareAtPrice: 300,
     variantId: 47062530523455,
     image: `${AU_CDN}/shed-stand-5_178877ed-7918-4362-b84a-553aaaa89ca5.webp?v=1773812348`,
@@ -230,9 +230,9 @@ export const addons = {
   slowFoldStrut: {
     name: "Slow-Fold Strut",
     note: "Gas-assisted, controlled fold — no more bumper slams",
-    price: 100,
+    price: 50,
     compareAtPrice: 250,
-    standalonePrice: 250,
+    standalonePrice: 150,
     variantId: 51584743670079,
     image: `${AU_CDN}/twin-fold-strut-featured.webp?v=1766116279`,
   },

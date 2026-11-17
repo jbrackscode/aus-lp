@@ -11,7 +11,7 @@ export const site = {
 
 export const product = {
   name: "4 Bike Rack",
-  price: 850,
+  price: 699,
   compareAtPrice: 950,
   handle: process.env.NEXT_PUBLIC_SHOPIFY_PRODUCT_HANDLE ?? "4-e-bike-rack",
   productUrl: `${storeUrl}/products/4-e-bike-rack`,
@@ -40,7 +40,7 @@ export const featureRows = [
     image: "/images/jb-racks_cheap_adventures.jpg",
     video: "/videos/5_gray-suv-mountain.mp4",
     title: "More Rides. Less Cost.",
-    body: "At an estimated $3.30 per ride, the JB 4 Rack pays for itself fast. Built to last for years of adventures, it's an affordable way to get out more — without the ongoing cost of bike hire or roof pods.",
+    body: "At an estimated $2.70 per ride, the JB 4 Rack pays for itself fast. Built to last for years of adventures, it's an affordable way to get out more — without the ongoing cost of bike hire or roof pods.",
     size: "small",
   },
   {

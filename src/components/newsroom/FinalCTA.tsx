@@ -9,7 +9,7 @@ export function FinalCTA() {
       <h2 className="mb-3 text-[26px] font-black leading-[1.2] text-white sm:text-[38px]">
         Get Your Family on the Trails Every Weekend
       </h2>
-      <p className="mb-5 text-base text-white/85">4, 5 &amp; 6-bike racks from $850 (RRP $950). Bundles from $950.</p>
+      <p className="mb-5 text-base text-white/85">4, 5 &amp; 6-bike racks from $699 (RRP $950). Bundles from $899.</p>
       <a
         href={dealsUrl}
         className="mb-4 inline-block rounded-full bg-white px-10 py-4 text-[17px] font-bold text-nr-orange-dark"

@@ -19,7 +19,7 @@ export const hero = {
   kicker: "4, 5 & 6 BIKE VERTICAL TOW BAR RACK",
   headline: "Are You Struggling to Get the Right Bike Rack?",
   sub: "A tow bar rack that's rated for the job - not the rack that was cheapest to stock. JB is engineered to carry 30 kg per wheel holder before the wobble, the scratched frame, or the strap failure ever gets the chance to happen.",
-  ctaPrimary: "For Just $850",
+  ctaPrimary: "For Just $699",
   ctaSecondary: "See why it's different",
   trustStrip: [
     { value: "4-Year", label: "Warranty" },
@@ -237,7 +237,7 @@ export const faqs = [
 export const finalCta = {
   headline: "Ready to ride?",
   body: "Free shipping, a 4-year warranty, and a rack built for exactly what you're hauling — pick your size below.",
-  cta: "For Just $850",
+  cta: "For Just $699",
 };
 
 export const stickyCta = {

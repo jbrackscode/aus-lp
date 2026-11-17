@@ -55,9 +55,9 @@ export const reasons: Reason[] = [
     paragraphs: [
       "If you've ever owned a rack that drops hard when folded, you know the anxiety: the sudden clang, the paint scratch risk, the kids jumping back. JB Racks' Slow-Fold Strut changes this entirely.",
       "Gas-assisted struts slow the fold-down to a controlled, smooth motion. The rack eases down, not crashes down - the kind of detail that shows a product built with families in mind.",
-      "The Slow-Fold Strut comes in the rack, strut and shed stand bundle - for $100 more than the rack and stand alone, against its $250 RRP.",
+      "The Slow-Fold Strut comes in the rack, strut and shed stand bundle - for $50 more than the rack and stand alone, against its $250 RRP.",
     ],
-    stat: { headline: "Bundle & save", detail: "Rack + Slow-Fold Strut + Shed Stand for $1,050" },
+    stat: { headline: "Bundle & save", detail: "Rack + Slow-Fold Strut + Shed Stand for $949" },
     pills: ["Gas-assisted", "Controlled fold"],
   },
   {
@@ -104,15 +104,15 @@ export const reasons: Reason[] = [
   },
   {
     number: "7.",
-    kicker: "Family sizes for every family - 4, 5 or 6 bikes, from $850",
+    kicker: "Family sizes for every family - 4, 5 or 6 bikes, from $699",
     image: "/images/newsroom/reason-7.jpg",
     imageAlt: "JB Racks family of bikes loaded on rack at trailhead",
     heading: "One rack for the whole crew - kids' bikes included",
     paragraphs: [
-      "JB Racks comes in 4, 5 and 6-bike configurations, all $850 (RRP $950). With optional 16–20 inch wheel brackets, even the smallest family member's bike fits perfectly.",
-      "The rack, strut and shed stand bundle currently saves $450 off individual pricing - the rack, the slow-fold strut, and a shed storage stand to keep the rack when it's not on the car.",
+      "JB Racks comes in 4, 5 and 6-bike configurations, all $699 (RRP $950). With optional 16–20 inch wheel brackets, even the smallest family member's bike fits perfectly.",
+      "The rack, strut and shed stand bundle currently saves $551 off individual pricing - the rack, the slow-fold strut, and a shed storage stand to keep the rack when it's not on the car.",
     ],
-    stat: { headline: "Bundle for $1,050", detail: "Rack + Slow-Fold Strut + Shed Stand - everything included" },
+    stat: { headline: "Bundle for $949", detail: "Rack + Slow-Fold Strut + Shed Stand - everything included" },
     pills: ["4, 5 or 6 bikes", "Kids' bikes fit too"],
   },
 ];

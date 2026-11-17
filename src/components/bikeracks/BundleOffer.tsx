@@ -9,11 +9,13 @@ type BundleOfferProps = {
 // Line items and savings are pulled from the same live-fetched Shopify data
 // the buy box uses (rack compare-at + Shed Stand + Slow-Fold Strut vs. the
 // actual bundle SKU price), not hardcoded — so this can't drift out of sync
-// with what checkout actually charges.
+// with what checkout actually charges. Every line is the item's RRP — on the
+// AU store slowFoldStrut.price is its in-bundle price, not a list price — so
+// the three lines add up to the full bundle's own compare-at price.
 export function BundleOffer({ rackSizes, addons }: BundleOfferProps) {
   const rack = rackSizes[0]; // base rack compare-at is the same across sizes
   const bundlePrice = rack.fullBundle.price;
-  const listTotal = rack.compareAtPrice + addons.garageStand.compareAtPrice + addons.slowFoldStrut.price;
+  const listTotal = rack.compareAtPrice + addons.garageStand.compareAtPrice + addons.slowFoldStrut.compareAtPrice;
   const savings = listTotal - bundlePrice;
 
   return (
@@ -43,7 +45,7 @@ export function BundleOffer({ rackSizes, addons }: BundleOfferProps) {
           </div>
           <div className="flex justify-between border-b border-dashed border-brand-line py-2.5 text-[14.5px]">
             <span>Slow-Fold Strut</span>
-            <span>${addons.slowFoldStrut.price}</span>
+            <span>${addons.slowFoldStrut.compareAtPrice}</span>
           </div>
           <div className="flex justify-between pt-3.5 text-lg font-extrabold text-brand-black">
             <span>Bundle price</span>

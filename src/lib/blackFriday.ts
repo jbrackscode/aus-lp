@@ -42,7 +42,7 @@ export function getBlackFridayOffer(rackSizes: RackSize[]): BlackFridayOffer {
   };
 }
 
-// Label for every sale CTA on /lp-demo-black-friday: "Shop the Sale - $749".
+// Label for every sale CTA on /lp-demo-black-friday: "Shop the Sale - $699".
 export function saleCtaLabel(offer: BlackFridayOffer) {
   return `Shop the Sale - $${offer.price}`;
 }
@@ -53,7 +53,7 @@ export function saleEndLabel() {
   return new Date(product.blackFridayEndsAt).toLocaleDateString("en-AU", { month: "short", day: "numeric", timeZone: "Australia/Sydney" });
 }
 
-// "4, 5 & 6-bike racks - all $499" or, if sizes ever diverge, "from $X".
+// "4, 5 & 6-bike racks - all $699" or, if sizes ever diverge, "from $X".
 export function offerPriceLine(offer: BlackFridayOffer) {
   return offer.allSamePrice ? `4, 5 & 6-bike racks - all $${offer.price}` : `4, 5 & 6-bike racks from $${offer.price}`;
 }

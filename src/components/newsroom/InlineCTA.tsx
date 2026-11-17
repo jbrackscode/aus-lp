@@ -6,7 +6,7 @@ export function InlineCTA() {
       <div>
         <h4 className="mb-1.5 text-xl font-bold text-white">Ready to upgrade your family&apos;s weekends?</h4>
         <p className="text-sm text-white/65">4, 5 &amp; 6-bike racks. Add the Shed Stand and Slow-Fold Strut and save.</p>
-        <span className="mt-1.5 block text-2xl font-bold text-nr-orange">From $850 - Bundles from $950</span>
+        <span className="mt-1.5 block text-2xl font-bold text-nr-orange">From $699 - Bundles from $899</span>
         <div className="mt-3.5 flex flex-wrap justify-center gap-5 sm:justify-start">
           {["4-year warranty", "Free shipping*", "20,000+ customers", "Secure checkout"].map((b) => (
             <div key={b} className="text-xs text-white/55">
