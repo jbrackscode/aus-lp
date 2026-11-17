@@ -12,9 +12,10 @@ import { BlackFridayOffer } from "@/components/blackfriday/BlackFridayOffer";
 import { BlackFridayMarquee } from "@/components/blackfriday/BlackFridayMarquee";
 import { BlackFridayClosing } from "@/components/blackfriday/BlackFridayClosing";
 import { NextSteps } from "@/components/blackfriday/NextSteps";
-import { featureRows, product } from "@/lib/config";
+import { StickySaleBar } from "@/components/blackfriday/StickySaleBar";
+import { featureRows, product, testimonials } from "@/lib/config";
 import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
-import { getBlackFridayOffer } from "@/lib/blackFriday";
+import { getBlackFridayOffer, saleCtaLabel } from "@/lib/blackFriday";
 import { getVisibleReviewPhotos } from "@/lib/okendo";
 
 // AU version of the US app's /lp-demo-black-friday: AUD pricing from the
@@ -45,12 +46,34 @@ const reasonQuotes = [
   { text: "Highly recommend JB racks especially for value for money.", author: "Lizzie A." },
   { text: "Peace of mind that my bikes will be 100% secured.", author: "Kelvin L." },
   { text: "Fits well. No issues. Perfect design.", author: "Russell W." },
-  { text: "It makes loading the bikes way easier and makes it easier to get out on the bike more.", author: "Jayden L." },
+  // Reason 05 is the e-bike reason (see reasonRows below). The only AU
+  // 5-star review mentioning e-bikes also says the rack is heavy with them
+  // loaded, so this is Helen M.'s testimonial from the store's own
+  // marketing (config.ts testimonials), quoted verbatim.
+  {
+    text: testimonials.find((t) => t.name === "Helen M.")?.quote ?? "",
+    author: "Helen M.",
+  },
 ];
 
 // Short topic labels for each reason's inset count ("01 / FAST LOADING"),
 // in featureRows order.
-const reasonKickers = ["Fast loading", "Value", "Bike protection", "Vehicle fit", "More ride time"];
+const reasonKickers = ["Fast loading", "Value", "Bike protection", "Vehicle fit", "E-bike ready"];
+
+// featureRows' fifth row ("Arrive. Unload. Ride.") repeats the first
+// ("Unload Fast. Ride Sooner."), so this page swaps it for e-bike capacity.
+// Specs are the AU product page's: 30 kg per wheel holder, 110 kg total.
+// Same clip as before. featureRows itself is shared with the
+// /lp-demonstration pages, so the swap happens here.
+const reasonRows = featureRows.map((row, i) =>
+  i === 4
+    ? {
+        ...row,
+        title: "Built for Heavy E-Bikes",
+        body: "Each wheel holder is rated to 30 kg, with 110 kg of total capacity across the rack - enough for e-bikes and adult mountain bikes. And you roll each bike onto its holder, so there's no hoisting a heavy e-bike above your head.",
+      }
+    : row,
+);
 
 export default async function LpDemoBlackFridayPage() {
   // Customer photos are checked against Okendo's public feed so any photo
@@ -58,7 +81,7 @@ export default async function LpDemoBlackFridayPage() {
   const [{ rackSizes }, photos] = await Promise.all([getLiveBikeRackData(), getVisibleReviewPhotos()]);
   const offer = getBlackFridayOffer(rackSizes);
 
-  const reasons = featureRows.map((row, i) => (
+  const reasons = reasonRows.map((row, i) => (
     <ArticleReason
       key={row.title}
       number={i + 1}
@@ -81,14 +104,14 @@ export default async function LpDemoBlackFridayPage() {
     <>
       <BlackFridayBar offer={offer} />
       <main className="bg-white">
-        <ArticleHeader />
+        <ArticleHeader offer={offer} />
 
         {reasons.slice(0, 2)}
         <EditorsNote offer={offer} />
         {reasons.slice(2)}
 
         <div className="mt-14">
-          <BfComparisonTable price={offer.price} ctaHref={product.productUrl} ctaLabel="Learn More" ctaShowPrice={false} />
+          <BfComparisonTable price={offer.price} ctaHref={product.productUrl} ctaLabel={saleCtaLabel(offer)} ctaShowPrice={false} />
         </div>
 
         {/* The article hands over to the sale here: the store's Black
@@ -112,11 +135,15 @@ export default async function LpDemoBlackFridayPage() {
             final CTA sends them to the product page. */}
         <NextSteps rackSizes={rackSizes} offer={offer} />
 
-        {/* Every "Learn More" button on this page goes to the 4-bike rack's
+        {/* Every "Shop the Sale" button on this page goes to the 4-bike rack's
             product page on the store rather than straight to checkout. */}
         <BlackFridayClosing offer={offer} />
       </main>
       <Footer />
+      {/* Mobile sticky offer bar, plus room under the footer so the bar
+          never covers its last line. */}
+      <StickySaleBar offer={offer} />
+      <div className="h-20 bg-brand-black sm:hidden" aria-hidden />
     </>
   );
 }
